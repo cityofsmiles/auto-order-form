@@ -200,48 +200,12 @@
         function extractProductId() {
             let productId = 'Unknown Product';
             
-            // Try to get from URL parameter first
+            // Get URL parameters from the iframe src
             const urlParams = new URLSearchParams(window.location.search);
             const idFromParam = urlParams.get('id');
+            
             if (idFromParam) {
-                return idFromParam.toUpperCase();
-            }
-            
-            // Try to get from referrer URL
-            let urlToCheck = document.referrer;
-            
-            // If no referrer, try parent window (if in iframe)
-            if (!urlToCheck) {
-                try {
-                    if (window.parent && window.parent !== window) {
-                        urlToCheck = window.parent.location.href;
-                    }
-                } catch (e) {
-                    // Cross-origin restriction
-                }
-            }
-            
-            // If still no URL, use current URL
-            if (!urlToCheck) {
-                urlToCheck = window.location.href;
-            }
-            
-            // Extract product ID from URL path
-            // Example: https://texmathpro.github.io/posts/g8-q4-ak/ -> G8-Q4-AK
-            if (urlToCheck) {
-                try {
-                    const url = new URL(urlToCheck);
-                    const pathParts = url.pathname.split('/').filter(part => part.length > 0);
-                    
-                    // Get the last part of the path (should be the product ID)
-                    if (pathParts.length > 0) {
-                        const lastPart = pathParts[pathParts.length - 1];
-                        // Convert to uppercase and keep the format
-                        productId = lastPart.toUpperCase();
-                    }
-                } catch (e) {
-                    console.error('Error parsing URL:', e);
-                }
+                productId = idFromParam.toUpperCase();
             }
             
             return productId;
