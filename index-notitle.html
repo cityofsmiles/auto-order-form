@@ -195,8 +195,6 @@
 
     <script>
         const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1438369273872515124/3k2OCJeg3mH0ut93rtxrMpgVxNi7PEjBpu0I-CkRRHUPRGbOveWmuiFahHuNZWzHZEKB';
-const PRODUCTS_URL='https://texmathpro.github.io/products.json';
-let currentProduct=null;
         
         // Extract product ID from URL
         function extractProductId() {
@@ -221,7 +219,7 @@ let currentProduct=null;
             const messageBox = document.getElementById('messageBox');
             
             // Get form values
-            const blogTitle=currentProduct?currentProduct.title:document.getElementById('blogTitle').value;
+            const blogTitle = document.getElementById('blogTitle').value;
             const customerName = document.getElementById('customerName').value;
             const customerEmail = document.getElementById('customerEmail').value;
             const orderDetails = document.getElementById('orderDetails').value;
@@ -238,7 +236,12 @@ let currentProduct=null;
                     embeds: [{
                         title: '🛒 Order Details',
                         color: 5814783, // Purple color
-                        fields:[{name:'🆔 Product Code',value:currentProduct.code,inline:true},{name:'🛍️ Product Name',value:currentProduct.title,inline:false},{name:'🎓 Grade',value:currentProduct.grade||'N/A',inline:true},{name:'💰 Price',value:'₱'+(currentProduct.price??'N/A'),inline:true},
+                        fields: [
+                            {
+                                name: '🛍️ Product Name',
+                                value: blogTitle,
+                                inline: false
+                            },
                             {
                                 name: '👤 Customer Name',
                                 value: customerName,
@@ -305,7 +308,10 @@ let currentProduct=null;
         });
         
         // Initialize on page load
-        window.addEventListener('load',async function(){try{await loadProduct();}catch(e){console.error(e);document.getElementById('blogTitle').value='Unknown Product';}});
+        window.addEventListener('load', function() {
+            const productId = extractProductId();
+            document.getElementById('blogTitle').value = productId;
+        });
     </script>
 </body>
 </html>
