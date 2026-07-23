@@ -194,8 +194,23 @@
             </div>
             
             <div class="form-group">
-                <label for="orderDetails">Order Details</label>
-                <textarea id="orderDetails" name="orderDetails" placeholder="Add any special requests or notes..."></textarea>
+                <label for="region">Region *</label>
+                <input type="text" id="region" name="region" required placeholder="Enter your region">
+            </div>
+
+            <div class="form-group">
+                <label for="division">Division *</label>
+                <input type="text" id="division" name="division" required placeholder="Enter your division">
+            </div>
+
+            <div class="form-group">
+                <label for="schoolName">Name of School *</label>
+                <input type="text" id="schoolName" name="schoolName" required placeholder="Enter your school name">
+            </div>
+
+            <div class="form-group">
+                <label for="schoolAddress">Address of School *</label>
+                <input type="text" id="schoolAddress" name="schoolAddress" required placeholder="Enter your school address">
             </div>
             
             <button type="submit" class="submit-btn" id="submitBtn">
@@ -239,7 +254,10 @@ let currentProduct=null;
             const blogTitle=currentProduct?currentProduct.title:document.getElementById('blogTitle').value;
             const customerName = document.getElementById('customerName').value;
             const customerEmail = document.getElementById('customerEmail').value;
-            const orderDetails = document.getElementById('orderDetails').value;
+            const region = document.getElementById('region').value;
+            const division = document.getElementById('division').value;
+            const schoolName = document.getElementById('schoolName').value;
+            const schoolAddress = document.getElementById('schoolAddress').value;
             
             // Disable button and show loading
             submitBtn.disabled = true;
@@ -272,14 +290,13 @@ let currentProduct=null;
                     }]
                 };
                 
-                // Add order details if provided
-                if (orderDetails.trim()) {
-                    discordMessage.embeds[0].fields.push({
-                        name: '📌 Additional Details',
-                        value: orderDetails,
-                        inline: false
-                    });
-                }
+                // Add school info (now required fields)
+                discordMessage.embeds[0].fields.push(
+                    { name: '🌏 Region', value: region, inline: true },
+                    { name: '🏢 Division', value: division, inline: true },
+                    { name: '🏫 School Name', value: schoolName, inline: false },
+                    { name: '📍 School Address', value: schoolAddress, inline: false }
+                );
                 
                 // Send to Discord
                 const response = await fetch(DISCORD_WEBHOOK, {
@@ -299,7 +316,10 @@ let currentProduct=null;
                     // Reset form
                     document.getElementById('customerName').value = '';
                     document.getElementById('customerEmail').value = '';
-                    document.getElementById('orderDetails').value = '';
+                    document.getElementById('region').value = '';
+                    document.getElementById('division').value = '';
+                    document.getElementById('schoolName').value = '';
+                    document.getElementById('schoolAddress').value = '';
                     
                     // Scroll to message
                     messageBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
