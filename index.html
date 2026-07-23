@@ -167,6 +167,21 @@
                 <label for="blogTitle">Product Name</label>
                 <input type="text" id="blogTitle" name="blogTitle" class="readonly-field" readonly>
             </div>
+
+            <div class="form-group">
+                <label for="productCode">Product Code</label>
+                <input type="text" id="productCode" name="productCode" class="readonly-field" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="productPrice">Price</label>
+                <input type="text" id="productPrice" name="productPrice" class="readonly-field" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="productGrade">Grade Level</label>
+                <input type="text" id="productGrade" name="productGrade" class="readonly-field" readonly>
+            </div>
             
             <div class="form-group">
                 <label for="customerName">Your Name *</label>
@@ -304,6 +319,12 @@ let currentProduct=null;
             }
         });
         
+        // Infer grade level from an id prefix like "g7-t1-s1-bp" -> "Grade 7"
+        function inferGradeFromId(id) {
+            const match = /^g(\d+)/i.exec(id);
+            return match ? 'Grade ' + match[1] : null;
+        }
+
         // Fetch products.json (a lookup object keyed by lowercase product id)
         // and find the product matching the ?id= param
         async function loadProduct() {
@@ -319,13 +340,19 @@ let currentProduct=null;
                 // products.json has no explicit "code" field, so use the id itself
                 currentProduct = { code: productId, ...match };
                 document.getElementById('blogTitle').value = match.title;
+                document.getElementById('productCode').value = productId;
+                document.getElementById('productPrice').value = '₱' + (match.price ?? 'N/A');
+                document.getElementById('productGrade').value = match.grade || inferGradeFromId(productId) || 'N/A';
             } else {
                 document.getElementById('blogTitle').value = 'Unknown Product';
+                document.getElementById('productCode').value = 'N/A';
+                document.getElementById('productPrice').value = 'N/A';
+                document.getElementById('productGrade').value = 'N/A';
             }
         }
 
         // Initialize on page load
-        window.addEventListener('load',async function(){try{await loadProduct();}catch(e){console.error(e);document.getElementById('blogTitle').value='Unknown Product';}});
+        window.addEventListener('load',async function(){try{await loadProduct();}catch(e){console.error(e);document.getElementById('blogTitle').value='Unknown Product';document.getElementById('productCode').value='N/A';document.getElementById('productPrice').value='N/A';document.getElementById('productGrade').value='N/A';}});
     </script>
 </body>
 </html>
