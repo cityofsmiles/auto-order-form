@@ -207,7 +207,7 @@ let currentProduct=null;
             const idFromParam = urlParams.get('id');
             
             if (idFromParam) {
-                productId = idFromParam.toUpperCase();
+                productId = idFromParam.toLowerCase();
             }
             
             return productId;
@@ -304,21 +304,20 @@ let currentProduct=null;
             }
         });
         
-        // Fetch products.json and find the product matching the ?id= param
+        // Fetch products.json (a lookup object keyed by lowercase product id)
+        // and find the product matching the ?id= param
         async function loadProduct() {
-            const productId = extractProductId(); // already uppercased
+            const productId = extractProductId(); // already lowercased
 
             const res = await fetch(PRODUCTS_URL);
             if (!res.ok) throw new Error('Failed to fetch products.json');
             const products = await res.json();
 
-            // Match case-insensitively against each product's code
-            const match = products.find(p =>
-                String(p.code || '').toUpperCase() === productId
-            );
+            const match = products[productId];
 
             if (match) {
-                currentProduct = match;
+                // products.json has no explicit "code" field, so use the id itself
+                currentProduct = { code: productId, ...match };
                 document.getElementById('blogTitle').value = match.title;
             } else {
                 document.getElementById('blogTitle').value = 'Unknown Product';
