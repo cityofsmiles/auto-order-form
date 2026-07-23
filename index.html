@@ -304,6 +304,27 @@ let currentProduct=null;
             }
         });
         
+        // Fetch products.json and find the product matching the ?id= param
+        async function loadProduct() {
+            const productId = extractProductId(); // already uppercased
+
+            const res = await fetch(PRODUCTS_URL);
+            if (!res.ok) throw new Error('Failed to fetch products.json');
+            const products = await res.json();
+
+            // Match case-insensitively against each product's code
+            const match = products.find(p =>
+                String(p.code || '').toUpperCase() === productId
+            );
+
+            if (match) {
+                currentProduct = match;
+                document.getElementById('blogTitle').value = match.title;
+            } else {
+                document.getElementById('blogTitle').value = 'Unknown Product';
+            }
+        }
+
         // Initialize on page load
         window.addEventListener('load',async function(){try{await loadProduct();}catch(e){console.error(e);document.getElementById('blogTitle').value='Unknown Product';}});
     </script>
