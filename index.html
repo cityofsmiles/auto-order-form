@@ -358,11 +358,12 @@ let currentProduct=null;
 
             if (match) {
                 // products.json has no explicit "code" field, so use the id itself
-                currentProduct = { code: productId, ...match };
+                const inferredGrade = match.grade || inferGradeFromId(productId) || 'N/A';
+                currentProduct = { code: productId, ...match, grade: inferredGrade };
                 document.getElementById('blogTitle').value = match.title;
                 document.getElementById('productCode').value = productId;
                 document.getElementById('productPrice').value = '₱' + (match.price ?? 'N/A');
-                document.getElementById('productGrade').value = match.grade || inferGradeFromId(productId) || 'N/A';
+                document.getElementById('productGrade').value = inferredGrade;
             } else {
                 document.getElementById('blogTitle').value = 'Unknown Product';
                 document.getElementById('productCode').value = 'N/A';
